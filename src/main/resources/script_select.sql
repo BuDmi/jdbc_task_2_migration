@@ -1,0 +1,1 @@
+select product_name from orders inner join customers c on c.id = ORDERS.customer_id where lower(name) = :name;
