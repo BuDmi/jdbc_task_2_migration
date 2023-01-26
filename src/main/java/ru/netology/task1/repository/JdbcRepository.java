@@ -1,23 +1,25 @@
 package ru.netology.task1.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
 public class JdbcRepository {
-
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public JdbcRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
 
     private final String selectSqlQuery = read("script_select.sql");
 
@@ -31,8 +33,7 @@ public class JdbcRepository {
     }
 
     public List<String> getProductName(String name) {
-        HashMap<String, String> arguments = new HashMap<>();
-        arguments.put("name", name);
+        SqlParameterSource arguments = new MapSqlParameterSource("name", name);
 
         return namedParameterJdbcTemplate.queryForList(selectSqlQuery, arguments, String.class);
     }
